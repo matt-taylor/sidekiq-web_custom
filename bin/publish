@@ -26,7 +26,7 @@ echo "Finished Pushing to Gemfury"
 
 # create tag in repo
 git tag -a $VERSION -m "$VERSION"
-git push https://${GITHUB_TOKEN}@github.com/${GITHUB_USER}/rails_base.git $VERSION
+git push https://${GITHUB_TOKEN}@github.com/${GITHUB_USER}/sidekiq-web_custom.git $VERSION
 echo "Finished Tagging to git"
 
 
@@ -37,4 +37,4 @@ SHA=$(git rev-parse HEAD)
 echo "Finished Pushing artificat to Git"
 
 # start fresh
-rm rails_base*.gem
+rm sidekiq-web_custom.gemspec
