@@ -10,6 +10,7 @@ RSpec.describe Sidekiq::Job do
   let(:job_count) { 1 }
 
   before do
+    Sidekiq::WebCustom.reset!
     Sidekiq::WebCustom.configure # inject the classes
     class Sidekiq::Job::Worker
       include Sidekiq::Worker
@@ -23,6 +24,7 @@ RSpec.describe Sidekiq::Job do
     allow(Sidekiq.logger).to receive(:info)
     job_count.times { worker.perform_async }
   end
+  after { Sidekiq::WebCustom.reset! }
 
   describe '#execute' do
     subject { job.execute }

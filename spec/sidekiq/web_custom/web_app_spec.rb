@@ -16,6 +16,7 @@ RSpec.describe Sidekiq::Web do
     # We are not testing this here -- it requires a full application setup
     allow_any_instance_of(Sidekiq::Web::CsrfProtection).to receive(:session).and_return({})
     allow_any_instance_of(Sidekiq::Web::CsrfProtection).to receive(:accept?).and_return(true)
+    Sidekiq::WebCustom.reset!
     Sidekiq::WebCustom.configure # inject the classes
     class Sidekiq::Web::Worker
       include Sidekiq::Worker
@@ -30,7 +31,7 @@ RSpec.describe Sidekiq::Web do
     allow(Sidekiq.logger).to receive(:warn)
     job_count.times { worker.perform_async }
   end
-  after { queue.clear }
+  after { queue.clear; Sidekiq::WebCustom.reset! }
 
   describe 'queues/drain/:name' do
     subject { post "/queues/drain/#{queue.name}" }
@@ -118,6 +119,7 @@ RSpec.describe Sidekiq::Web do
       after do
         queue2.clear
         Thread.current[Sidekiq::WebCustom::BREAK_BIT] = nil
+        Sidekiq::WebCustom.reset!
       end
 
       it 'logger message gets hit' do
@@ -158,6 +160,7 @@ RSpec.describe Sidekiq::Web do
 
     before { job_count.times { worker.perform_in(1000) } }
     after { Sidekiq::ScheduledSet.new.clear; Sidekiq::RetrySet.new.clear; }
+
     let(:sorted_klass) { Sidekiq::ScheduledSet }
     let(:job) { sorted_klass.new.first }
     let(:params) { "#{job.score}-#{job['jid']}" }
