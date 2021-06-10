@@ -10,6 +10,7 @@ RSpec.describe Sidekiq::Queue do
   let(:max) { job_count }
 
   before do
+    Sidekiq::WebCustom.reset!
     Sidekiq::WebCustom.configure # inject the classes
     class Sidekiq::Queue::Worker
       include Sidekiq::Worker
@@ -23,6 +24,7 @@ RSpec.describe Sidekiq::Queue do
     allow(Sidekiq.logger).to receive(:info)
     job_count.times { worker.perform_async }
   end
+  after { Sidekiq::WebCustom.reset! }
 
   describe '#drain' do
     subject { queue.drain(max: max) }
