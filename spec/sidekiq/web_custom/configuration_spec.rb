@@ -23,8 +23,8 @@ RSpec.describe Sidekiq::WebCustom::Configuration do
     it { expect { subject }.to change { instance.public_send(method) } }
 
     context 'with invalid value' do
-      context 'when float' do
-        let(:value) { 10.0 }
+      context 'when nil' do
+        let(:value) { nil }
 
         it { expect { subject }.to raise_error(Sidekiq::WebCustom::ArgumentError, /Expected #{method}/) }
       end

@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 
-if ENV['CI'] =='true' && ENV['RAILS_ENV'] == 'test'
+if ENV['CI'] =='true'
   require 'simplecov'
   # Needs to be loaded prior to application start
   SimpleCov.start
 end
 
 require "sidekiq/web_custom"
-
+# require 'sidekiq/testing'
+# Sidekiq::Testing.disable!
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|
@@ -51,6 +52,10 @@ RSpec.configure do |config|
   # the `--only-failures` and `--next-failure` CLI options. We recommend
   # you configure your source control system to ignore this file.
   config.example_status_persistence_file_path = "spec/examples.txt"
+
+  config.before do
+    Sidekiq.redis { |c| c.flushdb }
+  end
 
   # Limits the available syntax to the non-monkey patched syntax that is
   # recommended. For more details, see:

@@ -28,7 +28,9 @@ module Sidekiq
             raise Sidekiq::WebCustom::ConfigurationEstablished, "Unable to assign [#{int}]. Assignment must happen on boot"
           end
 
-          raise Sidekiq::WebCustom::ArgumentError, "Expected #{int} to be an integer" unless val.is_a?(Integer)
+          unless [Integer, Float].include?(val.class)
+            raise Sidekiq::WebCustom::ArgumentError, "Expected #{int} to be an integer or float"
+          end
 
           instance_variable_set(:"@#{int}", val)
         end
