@@ -18,6 +18,7 @@ module Sidekiq
     class FileNotFound < Error; end
     class StopExecution < Error; end
     class ExecutionTimeExceeded < Error; end
+    class ConfigurationEstablished < Error; end
 
     BREAK_BIT = '__sidekiq-web_custom-breakbit__'
 

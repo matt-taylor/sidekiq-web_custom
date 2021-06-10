@@ -8,8 +8,8 @@ module Sidekiq
       DEFAULT_DRAIN_RATE = 10
       DEFAULT_EXEC_TIME = 6
       DEFAULT_WARN_TIME = 5
-      attr_reader *ALLOWED_BASED
 
+      attr_reader *ALLOWED_BASED
       attr_reader *INTEGERS
 
       def initialize
@@ -24,13 +24,22 @@ module Sidekiq
 
       INTEGERS.each do |int|
          self.define_method("#{int}=") do |val|
-          raise Sidekiq::WebCustom::ArgumentError, "Expected #{int} to be an integer" unless val.is_a?(Integer)
+          unless _allow_write_block?
+            raise Sidekiq::WebCustom::ConfigurationEstablished, "Unable to assign [#{int}]. Assignment must happen on boot"
+          end
+
+          unless [Integer, Float].include?(val.class)
+            raise Sidekiq::WebCustom::ArgumentError, "Expected #{int} to be an integer or float"
+          end
 
           instance_variable_set(:"@#{int}", val)
         end
       end
 
       def merge(base:, params:, action_type: nil)
+        unless _allow_write_block?
+          raise Sidekiq::WebCustom::ConfigurationEstablished, "Unable to assign base [#{base}]. Assignment must happen on boot"
+        end
         raise Sidekiq::WebCustom::ArgumentError, "Unexpected base: #{base}" unless ALLOWED_BASED.include?(base)
         raise Sidekiq::WebCustom::ArgumentError, "Expected object for #{base} to be a Hash" unless params.is_a?(Hash)
 
@@ -62,9 +71,20 @@ module Sidekiq
         end
 
         define_convenienve_methods!
+        _unset_allow_write!
       end
 
       private
+
+      def _allow_write_block?
+        true
+      end
+
+      def _unset_allow_write!
+        define_singleton_method('_allow_write_block?') do
+          false
+        end
+      end
 
       def define_convenienve_methods!
         actions.keys.each do |key|
