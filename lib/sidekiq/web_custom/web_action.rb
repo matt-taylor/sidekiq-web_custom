@@ -10,8 +10,7 @@ module Sidekiq
       end
 
       def erb(content, options = {})
-        if content.is_a?(Symbol) && Sidekiq::WebCustom.local_erb_mapping[content].present?
-          src_file_replacement(content)
+        if content.is_a?(Symbol) && !Sidekiq::WebCustom.local_erb_mapping[content].nil?
           unless respond_to?(:"_erb_#{content}")
             file_name = Sidekiq::WebCustom.local_erb_mapping[content]
             src = ERB.new(src_file_replacement(content)).src

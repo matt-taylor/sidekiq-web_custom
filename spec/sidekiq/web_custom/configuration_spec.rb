@@ -35,6 +35,12 @@ RSpec.describe Sidekiq::WebCustom::Configuration do
         it { expect { subject }.to raise_error(Sidekiq::WebCustom::ArgumentError, /Expected #{method}/) }
       end
     end
+
+    context 'when assignment after validate' do
+      before { instance.validate! }
+
+      it { expect { subject }.to raise_error(Sidekiq::WebCustom::ConfigurationEstablished, /Unable to assign/) }
+    end
   end
 
   describe '#drain_rate' do
@@ -73,6 +79,12 @@ RSpec.describe Sidekiq::WebCustom::Configuration do
         subject
 
         expect(instance.actions).to eq(params)
+      end
+
+      context 'when assignment after validate' do
+        before { instance.validate! }
+
+        it { expect { subject }.to raise_error(Sidekiq::WebCustom::ConfigurationEstablished, /Unable to assign base/) }
       end
 
       context 'with action_type' do
@@ -121,6 +133,12 @@ RSpec.describe Sidekiq::WebCustom::Configuration do
         let(:params) { [] }
 
         it { expect { subject }.to raise_error(Sidekiq::WebCustom::ArgumentError, /Expected object for #{base}/) }
+      end
+
+      context 'when assignment after validate' do
+        before { instance.validate! }
+
+        it { expect { subject }.to raise_error(Sidekiq::WebCustom::ConfigurationEstablished, /Unable to assign base/) }
       end
     end
 
