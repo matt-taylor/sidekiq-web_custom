@@ -3,6 +3,7 @@ PATH
   specs:
     sidekiq-web_custom (0.2.0)
       sidekiq (>= 6.0)
+      timeoutable
 
 GEM
   remote: https://rubygems.org/
@@ -68,7 +69,7 @@ GEM
       zeitwerk (~> 2.3)
     builder (3.2.4)
     byebug (11.1.3)
-    concurrent-ruby (1.1.8)
+    concurrent-ruby (1.1.9)
     connection_pool (2.2.5)
     crass (1.0.6)
     diff-lcs (1.4.4)
@@ -78,7 +79,7 @@ GEM
       activesupport (>= 4.2.0)
     i18n (1.8.10)
       concurrent-ruby (~> 1.0)
-    loofah (2.9.1)
+    loofah (2.10.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     mail (2.7.1)
@@ -121,7 +122,7 @@ GEM
       rake (>= 0.8.7)
       thor (~> 1.0)
     rake (13.0.3)
-    redis (4.2.5)
+    redis (4.3.1)
     rspec (3.10.0)
       rspec-core (~> 3.10.0)
       rspec-expectations (~> 3.10.0)
@@ -155,9 +156,12 @@ GEM
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
     thor (1.1.0)
+    timeout (0.1.1)
+    timeoutable (1.0.0)
+      timeout
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
-    websocket-driver (0.7.4)
+    websocket-driver (0.7.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
     zeitwerk (2.4.2)
