@@ -89,21 +89,18 @@ workflows:
       - test:
           requires:
             - build
-      - publish-github
-      - publish-rubygems
-
-      # - publish-github:
-      #     requires:
-      #       - test
-      #     filters:
-      #       branches:
-      #         only:
-      #           - main
-      # - publish-rubygems:
-      #     requires:
-      #       - test
-      #     filters:
-      #       branches:
-      #         only:
-      #           - main
+      - publish-github:
+          requires:
+            - test
+          filters:
+            branches:
+              only:
+                - main
+      - publish-rubygems:
+          requires:
+            - test
+          filters:
+            branches:
+              only:
+                - main
 
