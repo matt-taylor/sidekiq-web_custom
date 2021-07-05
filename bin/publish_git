@@ -17,7 +17,7 @@ PACKAGE=${GEM_NAME}-${VERSION}.gem
 
 if [ $(git tag -l "$VERSION") ]; then
   echo "Pre existing version $VERSION, not tagging."
-  exit 0
+  exit 1
 fi
 
 gem build ${GEM_NAME}.gemspec
@@ -32,7 +32,7 @@ echo "Finished Tagging to git"
 
 # send artifacts to git
 SHA=$(git rev-parse HEAD)
-./$GHRLOCATION -soft -t ${GITHUB_TOKEN} -u ${GITHUB_USER} -r timeoutable -c ${SHA} ${VERSION} *.gem
+./$GHRLOCATION -soft -t ${GITHUB_TOKEN} -u ${GITHUB_USER} -r ${GEM_NAME} -c ${SHA} ${VERSION} *.gem
 echo "Finished Pushing artificat to Git"
 
-rm $
+rm ${FILE}
