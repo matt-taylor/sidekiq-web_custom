@@ -9,7 +9,11 @@ Gem::Specification.new do |spec|
   spec.email         = ["mattius.taylor@gmail.com"]
 
   spec.summary       = "This gem adds on custom capabilities to the Sidekiq Web UI"
-  spec.description   = "Write a longer description or delete this line."
+  spec.description   = <<-DOC
+    Have you ever needed to add custom buttons to the sidekiq UI?
+    Have you ever needed to drain a queue that is not bound to a Sidekiq Process?
+    This Gem allows you to to do all of that from the Sidekiq UI!
+  DOC
   spec.homepage      = "https://github.com/matt-taylor/sidekiq-web_custom"
   spec.license       = "MIT"
   spec.required_ruby_version = Gem::Requirement.new(">= 2.4.0")
@@ -30,7 +34,5 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency 'sidekiq', '>= 6.0'
-
-  # For more information and examples about making a new gem, checkout our
-  # guide at: https://bundler.io/guides/creating_gem.html
+  spec.add_dependency 'timeoutable', '>= 1.0'
 end
