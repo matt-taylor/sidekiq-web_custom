@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'byebug'
 require_relative 'web_custom/version'
 
 # require sidekiq/web first to ensure web_Action will prepend correctly
