@@ -1,9 +1,9 @@
 PATH
   remote: .
   specs:
-    sidekiq-web_custom (0.2.0)
+    sidekiq-web_custom (0.4.0)
       sidekiq (>= 6.0)
-      timeoutable
+      timeoutable (>= 1.0)
 
 GEM
   remote: https://rubygems.org/

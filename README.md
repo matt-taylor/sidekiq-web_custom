@@ -9,10 +9,8 @@ This Custom add on to the Sidekiq Web framework allows you to continue to drain 
 ## Installation
 
 Add this line to your application's Gemfile:
-
-Working on Adding a gem source. For now directly pull it from git
 ```ruby
-gem 'sidekiq-web_custom', source: 'https://github.com/matt-taylor/sidekiq-web_custom'
+gem 'sidekiq-web_custom'
 ```
 
 And then execute:
