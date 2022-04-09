@@ -5,84 +5,6 @@ orbs:
   node: circleci/node@2
   cst: cst/framework@1
 
-jobs:
-  build:
-    docker:
-      - image: cimg/ruby:2.7-node
-    steps:
-      - checkout
-      - ruby/install-deps
-    environment:
-  publish-rubygems:
-    docker:
-      - image: cimg/ruby:2.7-node # this is our primary docker image, where step commands run.
-    environment:
-      BUNDLE_JOBS: "3"
-      BUNDLE_RETRY: "3"
-      RAILS_ENV: test
-    steps:
-      - checkout
-      - ruby/install-deps
-      - run:
-          name: Publish Ruby Gems
-          command: |
-            bin/publish_ruby_gems
-  publish-github:
-    docker:
-      - image: cimg/ruby:2.7-node
-    environment:
-      BUNDLE_JOBS: "3"
-      BUNDLE_RETRY: "3"
-      RAILS_ENV: test
-    steps:
-      - checkout
-      - ruby/install-deps
-      - run:
-          name: 'Get Go'
-          command: |
-            sudo apt-get update -qq
-            sudo apt-get -y --no-install-recommends install golang-go
-      - run:
-          name: 'Set Git stats'
-          command: |
-            git config user.name $GITHUB_USER
-            git config user.email $GITHUB_EMAIL
-      - run:
-          name: 'Download GHR'
-          command: |
-            curl -sSL https://github.com/tcnksm/ghr/releases/download/v0.13.0/ghr_v0.13.0_linux_amd64.tar.gz | tar xz -f - -C . ghr_v0.13.0_linux_amd64/ghr
-            mv ghr_v0.13.0_linux_amd64/ghr .
-            rm -rf ghr_v0.13.0_linux_amd64
-            chmod 0755 ghr
-      - run:
-          name: Publish Git
-          command: |
-            export GHRLOCATION=ghr
-            bin/publish_git
-  test:
-    docker:
-      - image: cimg/ruby:2.7-node
-      - image: circleci/redis:latest
-    environment:
-      BUNDLE_JOBS: "3"
-      BUNDLE_RETRY: "3"
-      RAILS_ENV: test
-    # A series of steps to run, some are similar to those in "build".
-    steps:
-      - checkout
-      - ruby/install-deps
-      - run:
-          name: Setup Climate Control test-reporter
-          command: |
-            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-            chmod +x ./cc-test-reporter
-      - run:
-          name: Run le tests
-          command: |
-            ./cc-test-reporter before-build
-            SIMPLE_COV_RUN=true bundle exec rspec --format RspecJunitFormatter --out test-results/rspec/rspec.xml --format progress --color
-            ./cc-test-reporter after-build format-coverage -t simplecov
-
 workflows:
   version: 2
   yeet-le-jobs:
@@ -90,10 +12,10 @@ workflows:
       - cst/enforce-gem-version-bump
       - cst/rspec-ruby:
           rspec-system-args: "SIMPLE_COV_RUN=true"
-          cc-report-collect-ruby: "2.7.5-node"
+          cc-report-collect-ruby: "2.7.5"
           matrix:
             parameters:
-              ruby-version: ["2.7.5-node" , "3.0.0-node", "3.0.3-node"]
+              ruby-version: ["2.7.5" , "3.0.0", "3.0.3"]
             alias: required-matrix-tests
           name: test-ruby<< matrix.ruby-version >>
       - cst/publish-gem:
