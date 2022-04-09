@@ -52,7 +52,7 @@ RSpec.describe Sidekiq::Web do
     end
 
     it 'timeout correctly called' do
-      expect(Sidekiq::WebCustom::Timeout).to receive(:timeout).with(timeout_params).and_call_original
+      expect(::Timeoutable).to receive(:timeout).with(timeout_params).and_call_original
 
       subject
     end

@@ -44,7 +44,9 @@ RSpec.describe Sidekiq::WebCustom do
 
       expect(::Sidekiq::WebAction.included_modules.include?(Sidekiq::WebCustom::WebAction)).to be true
       expect(::Sidekiq::Queue.included_modules.include?(Sidekiq::WebCustom::Queue)).to be true
-      expect(::Sidekiq::Job.included_modules.include?(Sidekiq::WebCustom::Job)).to be true
+      if ::Sidekiq::VERSION >= "6.4.0"
+        expect(::Sidekiq::JobRecord.included_modules.include?(Sidekiq::WebCustom::Job)).to be true
+      end
     end
 
     it 'injects drain route' do

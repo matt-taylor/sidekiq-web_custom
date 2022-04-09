@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'timeoutable'
+
 module Sidekiq
   module WebCustom
     class WebApp
@@ -15,7 +17,7 @@ module Sidekiq
             proc: ->(thread, seconds) { thread[Sidekiq::WebCustom::BREAK_BIT] = 1; Sidekiq.logger.warn "set bit #{thread[Sidekiq::WebCustom::BREAK_BIT]}" }
           }
           Thread.current[Sidekiq::WebCustom::BREAK_BIT] = nil
-          Sidekiq::WebCustom::Timeout.timeout(timeout_params) do
+          ::Timeoutable.timeout(**timeout_params) do
             Sidekiq::Queue.new(params[:name]).drain(max: Sidekiq::WebCustom.config.drain_rate)
           end
           redirect_with_query("#{root_path}queues")
