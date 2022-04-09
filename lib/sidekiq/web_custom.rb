@@ -84,7 +84,13 @@ module Sidekiq
       @__already_called = true
       ::Sidekiq::WebAction.prepend WebAction
       ::Sidekiq::Queue.prepend Queue
-      ::Sidekiq::Job.prepend Job
+
+      if ::Sidekiq::VERSION >= "6.4.0"
+        ::Sidekiq::JobRecord.prepend Job
+      else
+        ::Sidekiq::Job.prepend Job
+      end
+
       ::Sidekiq::Web.register WebApp
     end
   end
