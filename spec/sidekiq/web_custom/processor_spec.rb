@@ -50,7 +50,7 @@ RSpec.describe Sidekiq::WebCustom::Processor do
   end
 
   describe '.__processor__' do
-    subject { described_class.__processor__(params) }
+    subject { described_class.__processor__(**params) }
 
     let(:params) { { queue: queue_in, options: options }.compact }
     let(:options) { nil }
