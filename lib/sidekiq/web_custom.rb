@@ -96,5 +96,3 @@ module Sidekiq
   end
 end
 
-# dependent the error classes loaded on boot, requie after code is loaded
-require 'sidekiq/web_custom/timeout'
