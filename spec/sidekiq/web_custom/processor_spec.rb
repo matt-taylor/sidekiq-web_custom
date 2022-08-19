@@ -6,7 +6,6 @@ RSpec.describe Sidekiq::WebCustom::Processor do
 
   let(:worker) { Sidekiq::WebCustom::Processor::TestWorker }
   let(:queue) { Sidekiq::Queue.new(worker.sidekiq_options['queue']) }
-  let(:manager) { nil }
   let(:options) { Sidekiq.options.merge(fetch: Sidekiq::BasicFetch) }
   let(:job_count) { 0 }
   before do
@@ -71,7 +70,7 @@ RSpec.describe Sidekiq::WebCustom::Processor do
   end
 
   describe '.initialize' do
-    subject { described_class.new(manager: manager, options: options, queue: queue) }
+    subject { described_class.new(options: options, queue: queue) }
 
     it do
       expect(subject).to be_a(described_class)

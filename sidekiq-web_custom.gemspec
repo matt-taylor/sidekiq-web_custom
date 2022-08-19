@@ -16,7 +16,7 @@ Gem::Specification.new do |spec|
   DOC
   spec.homepage      = "https://github.com/matt-taylor/sidekiq-web_custom"
   spec.license       = "MIT"
-  spec.required_ruby_version = Gem::Requirement.new(">= 2.4.0")
+  spec.required_ruby_version = Gem::Requirement.new(">= 2.7")
 
   # spec.metadata["allowed_push_host"] = "Set to 'http://mygemserver.com'"
 
@@ -33,6 +33,6 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_dependency 'sidekiq', '~> 6.0'
+  spec.add_dependency 'sidekiq', '~> 6.5'
   spec.add_dependency 'timeoutable', '>= 1.0'
 end

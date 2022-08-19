@@ -16,12 +16,10 @@ RSpec.describe Sidekiq::Queue do
       include Sidekiq::Worker
       sidekiq_options queue: :test_queue
       def perform(*)
-        Sidekiq.logger.info "received test message"
+        Kernel.puts "received test message"
       end
     end
     queue.clear
-    allow(Sidekiq).to receive(:logger).and_return(Logger.new('/dev/null'))
-    allow(Sidekiq.logger).to receive(:info)
     job_count.times { worker.perform_async }
   end
   after { Sidekiq::WebCustom.reset! }
@@ -36,7 +34,7 @@ RSpec.describe Sidekiq::Queue do
     end
 
     it 'calls worker logger' do
-      expect(Sidekiq.logger).to receive(:info).with('received test message').exactly(max)
+      expect(Kernel).to receive(:puts).with('received test message').exactly(max)
 
       subject
     end
@@ -55,7 +53,7 @@ RSpec.describe Sidekiq::Queue do
       end
 
       it 'calls worker logger' do
-        expect(Sidekiq.logger).to receive(:info).with('received test message').exactly(job_count)
+        expect(Kernel).to receive(:puts).with('received test message').exactly(job_count)
 
         subject
       end

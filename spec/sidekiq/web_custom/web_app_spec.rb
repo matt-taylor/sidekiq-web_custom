@@ -1,6 +1,5 @@
 require 'sidekiq/api'
 require 'sidekiq/web'
-require 'sidekiq/util'
 require 'rack/test'
 
 RSpec.describe Sidekiq::Web do

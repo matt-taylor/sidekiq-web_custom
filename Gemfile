@@ -7,7 +7,7 @@ gemspec
 
 
 gem 'rails'
-gem 'pry-byebug'
+gem 'pry'
 gem "rake", "~> 13.0"
 gem "rspec", "~> 3.0"
 gem 'rspec_junit_formatter'
