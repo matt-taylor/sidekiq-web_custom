@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    sidekiq-web_custom (0.5.0)
+    sidekiq-web_custom (0.6.0)
       sidekiq (~> 7)
       timeoutable (>= 1.0)
 
