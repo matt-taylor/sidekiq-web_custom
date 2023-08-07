@@ -4,30 +4,28 @@ module Sidekiq
   module WebCustom
     class Processor < ::Sidekiq::Processor
 
-      def self.execute(max:, queue:, options: Sidekiq)
+      def self.execute(max:, queue:, options: Sidekiq.default_configuration.default_capsule)
         __processor__(queue: queue, options: options).__execute(max: max)
       end
 
-      def self.execute_job(job:, options: Sidekiq)
+      def self.execute_job(job:, options: Sidekiq.default_configuration.default_capsule)
         __processor__(queue: job.queue, options: options).__execute_job(job: job)
       rescue StandardError => _
         false # error gets loggged downstream
       end
 
-      def self.__processor__(queue:, options: Sidekiq)
+      def self.__processor__(queue:, options: Sidekiq.default_configuration.default_capsule)
         options_temp = options.dup
         queue = queue.is_a?(String) ? Sidekiq::Queue.new(queue) : queue
 
-        options_temp[:queues] = [queue.name]
-        klass = options_temp[:fetch]&.class || BasicFetch
-        options_temp[:fetch] = klass.new(options_temp)
+        options_temp.queues = [queue.name]
 
         new(options: options_temp, queue: queue)
       end
 
       def initialize(options:, queue:)
         @__queue = queue
-        @__basic_fetch = options[:fetch].class == BasicFetch
+        @__basic_fetch = options.fetcher.class == BasicFetch
 
         super(options)
       end
