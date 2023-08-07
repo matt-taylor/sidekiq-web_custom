@@ -6,24 +6,26 @@ RSpec.describe Sidekiq::WebCustom::Processor do
 
   let(:worker) { Sidekiq::WebCustom::Processor::TestWorker }
   let(:queue) { Sidekiq::Queue.new(worker.sidekiq_options['queue']) }
-  let(:options) { Sidekiq.options.merge(fetch: Sidekiq::BasicFetch) }
+  let(:default_option) { Sidekiq::Config.new({fetch_class: Sidekiq::BasicFetch}) }
+  let(:options) { Sidekiq::Capsule.new(queue.name, default_option) }
   let(:job_count) { 0 }
+  let(:logger) { Sidekiq::Logger.new('/dev/null') }
   before do
     class Sidekiq::WebCustom::Processor::TestWorker
       include Sidekiq::Worker
       sidekiq_options queue: :test_queue
       def perform(*)
-        Sidekiq.logger.info "received test message"
+        logger.info "received test message"
       end
     end
     queue.clear
-    allow(Sidekiq).to receive(:logger).and_return(Logger.new('/dev/null'))
-    allow(Sidekiq.logger).to receive(:info)
-    allow(Sidekiq.logger).to receive(:error)
+    allow_any_instance_of(Sidekiq::Capsule).to receive(:logger).and_return(logger)
+    allow(Sidekiq).to receive(:logger).and_return(logger)
+    allow(logger).to receive(:info)
+    allow(logger).to receive(:error)
     job_count.times { worker.perform_async }
   end
   after { queue.clear }
-
 
   describe '.execute' do
     subject { described_class.execute(max: 1, queue: queue) }
@@ -54,11 +56,6 @@ RSpec.describe Sidekiq::WebCustom::Processor do
     let(:params) { { queue: queue_in, options: options }.compact }
     let(:options) { nil }
     let(:queue_in) { Sidekiq::Queue.new('queueeeeeeee') }
-    context 'when fetch is populated' do
-      let(:options) { Sidekiq.options.merge(fetch: Sidekiq::BasicFetch.new(Sidekiq.options))}
-
-      it { is_expected.to be_a(described_class) }
-    end
 
     context 'when queue is a string' do
       let(:queue_in) { 'some_queue' }
@@ -89,7 +86,7 @@ RSpec.describe Sidekiq::WebCustom::Processor do
       it { is_expected.to eq false }
 
       it do
-        expect(Sidekiq.logger).to receive(:error).with(/Manually processed work unit failed/)
+        expect(logger).to receive(:error).with(/Manually processed work unit failed/)
 
         subject
       end
@@ -135,7 +132,7 @@ RSpec.describe Sidekiq::WebCustom::Processor do
     let(:max) { job_count }
 
     it 'pulls max jobs from queue' do
-      expect(Sidekiq.logger).to receive(:info).with('received test message').exactly(max).times
+      expect(logger).to receive(:info).with('received test message').exactly(max).times
 
       subject
     end

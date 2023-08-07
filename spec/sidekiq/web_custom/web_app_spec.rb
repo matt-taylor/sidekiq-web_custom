@@ -98,6 +98,7 @@ RSpec.describe Sidekiq::Web do
       let(:worker2) { RaiseMyWorker }
       let(:queue2) { Sidekiq::Queue.new(worker2.sidekiq_options['queue']) }
       let(:job_count) { 10 }
+      let(:logger) { Sidekiq::Logger.new('/dev/null') }
       before do
         Sidekiq::WebCustom.reset!
         Sidekiq::WebCustom.configure do |config|
@@ -114,6 +115,8 @@ RSpec.describe Sidekiq::Web do
         queue2.clear
         job_count.times { worker2.perform_async }
         Thread.current[Sidekiq::WebCustom::BREAK_BIT] = nil
+        allow_any_instance_of(Sidekiq::Capsule).to receive(:logger).and_return(logger)
+        allow(logger).to receive(:warn)
       end
       after do
         queue2.clear
@@ -122,7 +125,7 @@ RSpec.describe Sidekiq::Web do
       end
 
       it 'logger message gets hit' do
-        expect(Sidekiq.logger).to receive(:warn).with(/Yikes -- Break bit has been set/)
+        expect(logger).to receive(:warn).with(/Yikes -- Break bit has been set/)
 
         subject
       end
